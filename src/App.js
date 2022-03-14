@@ -1,25 +1,62 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import ListItem from "./components/ListItem/ListItem";
+import TaskField from "./components/TaskField/TaskField";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+   const [tasks, setTasks] = React.useState([]);
+
+    const onToggleCompleted = (index) => {
+      setTasks((prevTasks) =>
+        prevTasks.map((task, curIdx) =>
+          index === curIdx
+            ? {
+                ...task,
+                completed: !task.completed,
+              }
+            : task,
+        ),
+      );
+    };
+  
+    const onRemoveTask = (index) => {
+      setTasks((prevTasks) => prevTasks.filter((_, curIdx) => index !== curIdx));
+    }; 
+    
+    const onAddTask = (text) => {
+      setTasks((prevTasks) => [
+        ...prevTasks,
+        {
+          text,
+          completed: false,
+        },
+      ]);
+    };
+   
+   return (
+     
+      <div className='todo'>
+         <div className='todo__header'>
+            <h1>Список задач</h1>
+         </div>
+         <TaskField onAddTask={onAddTask}/>
+         <div className='todo__list'>
+            {
+            tasks.map((task, index) => (
+          <ListItem
+            key={index}
+            index={index}
+            text={task.text}
+            completed={task.completed}
+            onToggleCompleted={onToggleCompleted}
+            onRemoveTask={onRemoveTask}
+          />
+               ))
+            }
+         </div>
+      </div>
+ 
+   );
 }
 
 export default App;
